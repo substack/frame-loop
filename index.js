@@ -14,6 +14,7 @@ function Engine (fn, opts) {
     this.time = 0;
     this._timers = [];
     this._fpsTarget = opts.fps || 60;
+    this._requestFrame = opts.requestFrame || detectRequestFrame();
     
     if (fn) this.on('tick', fn);
 }
@@ -29,7 +30,7 @@ Engine.prototype.run = function () {
         var elapsed = (Date.now() - self.last) / 1000;
         var delay = Math.max(0, (1 / self._fpsTarget) - elapsed);
         setTimeout(function () {
-            window.requestAnimationFrame(tick);
+            self._requestFrame(tick);
         }, delay * 1000);
     })();
 };
@@ -79,3 +80,18 @@ Engine.prototype.setInterval = function (fn, ts) {
     };
     this._timers.push([ f, ts ]);
 };
+
+function detectRequestFrame () {
+    if (typeof window !== 'undefined' && window
+    && window.requestAnimationFrame) {
+        return function (fn) { window.requestAnimationFrame(fn) };
+    }
+    if (typeof self !== 'undefined' && self
+    && self.requestAnimationFrame) {
+        return function (fn) { self.requestAnimationFrame(fn) };
+    }
+    if (typeof setImmediate !== 'undefined') {
+        return function (fn) { setImmediate(fn) };
+    }
+    return function (fn) { setTimeout(fn, 0) };
+}
