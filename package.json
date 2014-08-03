@@ -1,0 +1,36 @@
+{
+  "name": "frame-loop",
+  "version": "1.0.0",
+  "description": "timing for simulations and games for node and the browser",
+  "main": "index.js",
+  "dependencies": {
+    "defined": "~0.0.0",
+    "inherits": "^2.0.1"
+  },
+  "devDependencies": {
+    "tape": "^2.13.2"
+  },
+  "scripts": {
+    "test": "tape test/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/substack/frame-loop.git"
+  },
+  "homepage": "https://github.com/substack/frame-loop",
+  "keywords": [
+    "game",
+    "browser",
+    "simulation",
+    "engine",
+    "frame",
+    "requestAnimationFrame",
+    "loop"
+  ],
+  "author": {
+    "name": "James Halliday",
+    "email": "mail@substack.net",
+    "url": "http://substack.net"
+  },
+  "license": "MIT"
+}
