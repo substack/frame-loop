@@ -19,7 +19,7 @@ function Engine (opts, fn) {
     this.last = Date.now();
     this.time = 0;
     this._timers = [];
-    this._fpsTarget = opts.fps || 60;
+    this._fpsTarget = defined(opts.fps, 60);
     this._fpsWindow = defined(opts.fpsWindow, 1000);
     this._info = null;
     this.fps = 0;
