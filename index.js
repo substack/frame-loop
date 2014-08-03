@@ -5,9 +5,14 @@ var defined = require('defined');
 module.exports = Engine;
 inherits(Engine, EventEmitter);
 
-function Engine (fn, opts) {
-    if (!(this instanceof Engine)) return new Engine(fn, opts);
+function Engine (opts, fn) {
+    if (!(this instanceof Engine)) return new Engine(opts, fn);
     EventEmitter.call(this);
+    
+    if (typeof opts === 'function') {
+        fn = opts;
+        opts = {};
+    }
     if (!opts) opts = {};
     
     this.running = false;
@@ -59,13 +64,13 @@ Engine.prototype.tick = function () {
     this.time += dt;
     this.emit('tick', dt);
     
-    if (this._info) { this._info.frames ++ }
     if (this._info && this._fpsWindow
     && now - this._info.start > this._fpsWindow) {
         this.fps = this._info.frames / this._fpsWindow * 1000;
         this._info = { frames: 0, start: now };
         this.emit('fps', this.fps);
     }
+    if (this._info) { this._info.frames ++ }
     
     var due = [];
     for (var i = 0; i < this._timers.length; i++) {
