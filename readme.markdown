@@ -2,6 +2,10 @@
 
 timing for simulations and games for node and the browser
 
+[![testling badge](https://ci.testling.com/substack/frame-loop.png)](https://ci.testling.com/substack/frame-loop)
+
+[![build status](https://secure.travis-ci.org/substack/frame-loop.png)](http://travis-ci.org/substack/frame-loop)
+
 # example
 
 Here is a simple game where you can drive a purple square with the keyboard:
