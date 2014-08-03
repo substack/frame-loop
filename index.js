@@ -1,5 +1,6 @@
 var inherits = require('inherits');
 var EventEmitter = require('events').EventEmitter;
+var defined = require('defined');
 
 module.exports = Engine;
 inherits(Engine, EventEmitter);
@@ -14,6 +15,9 @@ function Engine (fn, opts) {
     this.time = 0;
     this._timers = [];
     this._fpsTarget = opts.fps || 60;
+    this._fpsWindow = defined(opts.fpsWindow, 1000);
+    this._info = null;
+    this.fps = 0;
     this._requestFrame = opts.requestFrame || detectRequestFrame();
     
     if (fn) this.on('tick', fn);
@@ -24,8 +28,10 @@ Engine.prototype.run = function () {
     if (this.running) return;
     this.running = true;
     this.last = Date.now();
+    this._info = { frames: 0, start: this.last };
     
     (function tick () {
+        if (!self.running) return;
         self.tick();
         var elapsed = (Date.now() - self.last) / 1000;
         var delay = Math.max(0, (1 / self._fpsTarget) - elapsed);
@@ -52,6 +58,14 @@ Engine.prototype.tick = function () {
     this.last = now;
     this.time += dt;
     this.emit('tick', dt);
+    
+    if (this._info) { this._info.frames ++ }
+    if (this._info && this._fpsWindow
+    && now - this._info.start > this._fpsWindow) {
+        this.fps = this._info.frames / this._fpsWindow * 1000;
+        this._info = { frames: 0, start: now };
+        this.emit('fps', this.fps);
+    }
     
     var due = [];
     for (var i = 0; i < this._timers.length; i++) {
