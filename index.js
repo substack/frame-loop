@@ -78,7 +78,7 @@ Engine.prototype.tick = function () {
         for (var i = 0; i < this._timers.length; i++) {
             var t = this._timers[i];
             if (t.time <= this.time) {
-                due.push(t.fn);
+                if (!this._cleared || !this._cleared[t.id]) due.push(t.fn);
                 this._timers.splice(i, 1);
                 i --;
             }
@@ -86,6 +86,7 @@ Engine.prototype.tick = function () {
         }
         for (var i = 0; i < due.length; i++) due[i]();
     } while (due.length);
+    this._cleared = null;
 };
 
 Engine.prototype.setTimeout = function (fn, ts) {
@@ -120,7 +121,10 @@ Engine.prototype.setInterval = function (fn, ts) {
 Engine.prototype.clearTimeout =
 Engine.prototype.clearInterval = function (id) {
     for (var i = 0; i < this._timers.length; i++) {
-        if (this._timers[i].id === id) {
+        var t = this._timers[i];
+        if (t.id === id) {
+            if (!this._cleared) this._cleared = {};
+            this._cleared[id] = true;
             this._timers.splice(i, 1);
             break;
         }
