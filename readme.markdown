@@ -110,13 +110,21 @@ Stop the engine.
 
 If the engine was running, pause it. Otherwise, run the engine.
 
-## engine.setTimeout(fn, time)
+## var to = engine.setTimeout(fn, time)
 
 Schedule an event `fn` to happen in `time` milliseconds of game time.
 
-## engine.setInterval(fn, time)
+## engine.clearTimeout(to)
+
+Clear a timeout `to` created with `engine.setTimeout()`.
+
+## var iv = engine.setInterval(fn, time)
 
 Schedule an event `fn` to happen every `time` milliseconds of game time.
+
+## engine.clearInterval(iv)
+
+Clear a timeout `iv` created with `engine.setInterval()`.
 
 # properties
 
