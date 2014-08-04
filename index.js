@@ -19,6 +19,7 @@ function Engine (opts, fn) {
     this.last = Date.now();
     this.time = 0;
     this._timers = [];
+    this._timerId = 1;
     this._fpsTarget = defined(opts.fps, 60);
     this._fpsWindow = defined(opts.fpsWindow, 1000);
     this._info = null;
@@ -85,7 +86,9 @@ Engine.prototype.tick = function () {
 };
 
 Engine.prototype.setTimeout = function (fn, ts) {
-    this._timers.push([ fn, this.time + ts ]);
+    var id = this._timerId ++;
+    this._timers.push([ fn, this.time + ts, id ]);
+    return id;
 };
 
 Engine.prototype.setInterval = function (fn, ts) {
@@ -97,7 +100,19 @@ Engine.prototype.setInterval = function (fn, ts) {
         last = self.time;
         self._timers.push([ f, self.time + ts + skew ]);
     };
-    this._timers.push([ f, ts ]);
+    var id = this._timerId ++;
+    this._timers.push([ f, ts, id ]);
+    return id;
+};
+
+Engine.prototype.clearTimeout =
+Engine.prototype.clearInterval = function (id) {
+    for (var i = 0; i < this._timers.length; i++) {
+        if (this._timers[i][2] === id) {
+            this._timers.splice(i, 1);
+            break;
+        }
+    }
 };
 
 function detectRequestFrame () {
