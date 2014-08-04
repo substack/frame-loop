@@ -76,32 +76,42 @@ Engine.prototype.tick = function () {
     var due = [];
     for (var i = 0; i < this._timers.length; i++) {
         var t = this._timers[i];
-        if (t[1] <= this.time) {
-            due.push(t[0]);
+        if (t.time <= this.time) {
+            due.push(t.fn);
             this._timers.splice(i, 1);
             i --;
         }
+        else break;
     }
     for (var i = 0; i < due.length; i++) due[i]();
 };
 
 Engine.prototype.setTimeout = function (fn, ts) {
     var id = this._timerId ++;
-    this._timers.push([ fn, this.time + ts, id ]);
+    this._pushTimer({ fn: fn, time: this.time + ts, id: id });
     return id;
+};
+
+Engine.prototype._pushTimer = function (rec) {
+    for (var i = 0; i < this._timers.length; i++) {
+        var t = this._timers[i];
+        if (rec.time < t.time) {
+            this._timers.splice(i, 0, rec);
+            return;
+        }
+    }
+    this._timers.push(rec);
 };
 
 Engine.prototype.setInterval = function (fn, ts) {
     var self = this;
-    var last = self.time;
+    var first = self.time, times = 0;
     var f = function () {
         fn();
-        var skew = ts - (self.time - last);
-        last = self.time;
-        self._timers.push([ f, self.time + ts + skew ]);
+        self._pushTimer({ fn: f, time: first + (times++) * ts, id: id });
     };
     var id = this._timerId ++;
-    this._timers.push([ f, ts, id ]);
+    this._pushTimer({ fn: f, time: ts, id: id });
     return id;
 };
 
