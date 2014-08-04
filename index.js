@@ -73,17 +73,19 @@ Engine.prototype.tick = function () {
     }
     if (this._info) { this._info.frames ++ }
     
-    var due = [];
-    for (var i = 0; i < this._timers.length; i++) {
-        var t = this._timers[i];
-        if (t.time <= this.time) {
-            due.push(t.fn);
-            this._timers.splice(i, 1);
-            i --;
+    do {
+        var due = [];
+        for (var i = 0; i < this._timers.length; i++) {
+            var t = this._timers[i];
+            if (t.time <= this.time) {
+                due.push(t.fn);
+                this._timers.splice(i, 1);
+                i --;
+            }
+            else break;
         }
-        else break;
-    }
-    for (var i = 0; i < due.length; i++) due[i]();
+        for (var i = 0; i < due.length; i++) due[i]();
+    } while (due.length);
 };
 
 Engine.prototype.setTimeout = function (fn, ts) {
@@ -108,17 +110,17 @@ Engine.prototype.setInterval = function (fn, ts) {
     var first = self.time, times = 0;
     var f = function () {
         fn();
-        self._pushTimer({ fn: f, time: first + (times++) * ts, id: id });
+        self._pushTimer({ fn: f, time: first + (++ times) * ts, id: id });
     };
     var id = this._timerId ++;
-    this._pushTimer({ fn: f, time: ts, id: id });
+    this._pushTimer({ fn: f, time: first + ts, id: id });
     return id;
 };
 
 Engine.prototype.clearTimeout =
 Engine.prototype.clearInterval = function (id) {
     for (var i = 0; i < this._timers.length; i++) {
-        if (this._timers[i][2] === id) {
+        if (this._timers[i].id === id) {
             this._timers.splice(i, 1);
             break;
         }
