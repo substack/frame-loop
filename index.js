@@ -1,6 +1,7 @@
 var inherits = require('inherits');
 var EventEmitter = require('events').EventEmitter;
 var defined = require('defined');
+var raf = require('raf');
 
 module.exports = Engine;
 inherits(Engine, EventEmitter);
@@ -24,7 +25,7 @@ function Engine (opts, fn) {
     this._fpsWindow = defined(opts.fpsWindow, 1000);
     this._info = null;
     this.fps = 0;
-    this._requestFrame = opts.requestFrame || detectRequestFrame();
+    this._requestFrame = opts.requestFrame || raf;
     
     if (fn) this.on('tick', fn);
 }
@@ -130,18 +131,3 @@ Engine.prototype.clearInterval = function (id) {
         }
     }
 };
-
-function detectRequestFrame () {
-    if (typeof window !== 'undefined' && window
-    && window.requestAnimationFrame) {
-        return function (fn) { window.requestAnimationFrame(fn) };
-    }
-    if (typeof self !== 'undefined' && self
-    && self.requestAnimationFrame) {
-        return function (fn) { self.requestAnimationFrame(fn) };
-    }
-    if (typeof setImmediate !== 'undefined') {
-        return function (fn) { setImmediate(fn) };
-    }
-    return function (fn) { setTimeout(fn, 0) };
-}

@@ -5,7 +5,8 @@
   "main": "index.js",
   "dependencies": {
     "defined": "~0.0.0",
-    "inherits": "^2.0.1"
+    "inherits": "^2.0.1",
+    "raf": "^2.0.2"
   },
   "devDependencies": {
     "tape": "^2.13.2"
