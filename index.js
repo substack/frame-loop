@@ -112,7 +112,7 @@ Engine.prototype._pushTimer = function (rec) {
 
 Engine.prototype.setInterval = function (fn, ts) {
     var self = this;
-    var first = self.time, times = 0;
+    var first = self.time, times = 1;
     var f = function () {
         fn();
         self._pushTimer({ fn: f, time: first + (++ times) * ts, id: id });
