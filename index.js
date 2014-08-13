@@ -60,21 +60,21 @@ Engine.prototype.toggle = function () {
 Engine.prototype.tick = function () {
     if (!this.running) return;
     
-    var now = Date.now();
-    var dt = now - this.last;
-    this.last = now;
-    this.time += dt;
-    this.emit('tick', dt);
-    
-    if (this._info && this._fpsWindow
-    && now - this._info.start > this._fpsWindow) {
-        this.fps = this._info.frames / this._fpsWindow * 1000;
-        this._info = { frames: 0, start: now };
-        this.emit('fps', this.fps);
-    }
-    if (this._info) { this._info.frames ++ }
-    
     do {
+        var now = Date.now();
+        var dt = now - this.last;
+        this.last = now;
+        this.time += dt;
+        this.emit('tick', dt);
+        
+        if (this._info && this._fpsWindow
+        && now - this._info.start > this._fpsWindow) {
+            this.fps = this._info.frames / this._fpsWindow * 1000;
+            this._info = { frames: 0, start: now };
+            this.emit('fps', this.fps);
+        }
+        if (this._info) { this._info.frames ++ }
+         
         var due = [];
         for (var i = 0; i < this._timers.length; i++) {
             var t = this._timers[i];

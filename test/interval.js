@@ -7,11 +7,13 @@ test('interval', function (t) {
     
     var i = 0;
     var iv = engine.setInterval(function () {
+        console.error(i, engine.time);
         i ++;
     }, 2);
     
     engine.setTimeout(function () {
         engine.clearInterval(iv);
+        console.error('STOP', engine.time);
         t.equal(i, 25);
     }, 51);
     
