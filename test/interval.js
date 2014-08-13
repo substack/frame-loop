@@ -8,15 +8,15 @@ test('interval', function (t) {
     var i = 0;
     var iv = engine.setInterval(function () {
         i ++;
-    }, 10);
+    }, 2);
     
     engine.setTimeout(function () {
         engine.clearInterval(iv);
-        t.equal(i, 5);
+        t.equal(i, 25);
     }, 51);
     
     engine.setTimeout(function () {
-        t.equal(i, 5);
+        t.equal(i, 25);
     }, 100);
     
     engine.run();
