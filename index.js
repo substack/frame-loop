@@ -60,33 +60,36 @@ Engine.prototype.toggle = function () {
 Engine.prototype.tick = function () {
     if (!this.running) return;
     
+    var now = Date.now();
+    var dt = now - this.last;
+    this.last = now;
+    this.time += dt;
+    this.emit('tick', dt);
+    
+    if (this._info && this._fpsWindow
+    && now - this._info.start > this._fpsWindow) {
+        this.fps = this._info.frames / this._fpsWindow * 1000;
+        this._info = { frames: 0, start: now };
+        this.emit('fps', this.fps);
+    }
+    if (this._info) { this._info.frames ++ }
+    
     do {
-        var now = Date.now();
-        var dt = now - this.last;
-        this.last = now;
-        this.time += dt;
-        this.emit('tick', dt);
-        
-        if (this._info && this._fpsWindow
-        && now - this._info.start > this._fpsWindow) {
-            this.fps = this._info.frames / this._fpsWindow * 1000;
-            this._info = { frames: 0, start: now };
-            this.emit('fps', this.fps);
-        }
-        if (this._info) { this._info.frames ++ }
-         
-        var due = [];
+        var called = false;
         for (var i = 0; i < this._timers.length; i++) {
             var t = this._timers[i];
             if (t.time <= this.time) {
-                if (!this._cleared || !this._cleared[t.id]) due.push(t.fn);
+                var c = this._cleared && this._cleared[t.id];
+                if (!c) {
+                    called = true;
+                    t.fn();
+                }
                 this._timers.splice(i, 1);
                 i --;
             }
             else break;
         }
-        for (var i = 0; i < due.length; i++) due[i]();
-    } while (due.length);
+    } while (called);
     this._cleared = null;
 };
 
