@@ -2,7 +2,7 @@ var inherits = require('inherits');
 var EventEmitter = require('events').EventEmitter;
 var defined = require('defined');
 var raf = require('raf');
-var detectTimer = require('./time');
+var detectTimer = require('./lib/now.js');
 
 module.exports = Engine;
 inherits(Engine, EventEmitter);
