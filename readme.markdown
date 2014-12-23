@@ -89,6 +89,9 @@ If a function `fn(dt)` is given, it will be registered as a listener for the
 * `opts.fpsWindow` - how often to emit the `'fps'` event in milliseconds,
 default: 1000
 * `opts.requestFrame` - the function to use to request a frame
+* `opts.now` - function to use for timing in milliseconds like `Date.
+now()`. By default, this is `window.performance.now()` in browsers and a wrapper
+for `process.hrtime()` that returns floating point milliseconds in node.
 
 If `opts.requestFrame` isn't provided, it will be detected dynamically.
 
