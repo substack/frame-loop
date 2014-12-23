@@ -2,7 +2,7 @@ var inherits = require('inherits');
 var EventEmitter = require('events').EventEmitter;
 var defined = require('defined');
 var raf = require('raf');
-var detectTimer = require('./lib/now.js');
+var defaultTimer = require('./lib/now.js');
 
 module.exports = Engine;
 inherits(Engine, EventEmitter);
@@ -18,7 +18,7 @@ function Engine (opts, fn) {
     if (!opts) opts = {};
     
     this.running = false;
-    this.now = opts.now || detectTimer();
+    this.now = opts.now || defaultTimer;
     this.last = this.now();
     this.time = 0;
     this._timers = [];
@@ -44,7 +44,7 @@ Engine.prototype.run = function () {
         self.tick();
         var elapsed = (self.now() - self.last) / 1000;
         var delay = Math.max(0, (1 / self._fpsTarget) - elapsed);
-        var dms = Math.floor(delay * 1000);
+        var dms = delay * 1000;
         if (dms <= 4) self._requestFrame(tick)
         else setTimeout(function () { self._requestFrame(tick) }, dms)
     })();
