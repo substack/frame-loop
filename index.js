@@ -2,8 +2,7 @@ var inherits = require('inherits');
 var EventEmitter = require('events').EventEmitter;
 var defined = require('defined');
 var raf = require('raf');
-var time = require('./time');
-
+var detectTimer = require('./time');
 
 module.exports = Engine;
 inherits(Engine, EventEmitter);
@@ -19,7 +18,8 @@ function Engine (opts, fn) {
     if (!opts) opts = {};
     
     this.running = false;
-    this.last = time();
+    this.now = opts.now || detectTimer();
+    this.last = this.now();
     this.time = 0;
     this._timers = [];
     this._timerId = 1;
@@ -36,13 +36,13 @@ Engine.prototype.run = function () {
     var self = this;
     if (this.running) return;
     this.running = true;
-    this.last = time();
+    this.last = this.now();
     this._info = { frames: 0, start: this.last };
     
     (function tick () {
         if (!self.running) return;
         self.tick();
-        var elapsed = (time() - self.last) / 1000;
+        var elapsed = (self.now() - self.last) / 1000;
         var delay = Math.max(0, (1 / self._fpsTarget) - elapsed);
         var dms = Math.floor(delay * 1000);
         if (dms <= 4) self._requestFrame(tick)
@@ -62,7 +62,7 @@ Engine.prototype.toggle = function () {
 Engine.prototype.tick = function () {
     if (!this.running) return;
     
-    var now = time();
+    var now = this.now();
     var dt = now - this.last;
     this.last = now;
     this.time += dt;

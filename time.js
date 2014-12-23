@@ -1,7 +1,9 @@
-module.exports = function time () {
-  if ((typeof performance !== "undefined" && performance !== null) && performance.now) {
-    return performance.now();
-  } else {
-    return Date.now();
-  }
+module.exports = function () {
+    if (typeof performance !== 'undefined' && performance
+    && typeof performance.now === 'function') {
+        return function () { return performance.now() };
+    }
+    else return function () {
+        return Date.now();
+    };
 };
