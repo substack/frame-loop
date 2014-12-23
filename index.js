@@ -45,7 +45,7 @@ Engine.prototype.run = function () {
         var elapsed = (self.now() - self.last) / 1000;
         var delay = Math.max(0, (1 / self._fpsTarget) - elapsed);
         var dms = delay * 1000;
-        if (dms <= 4) self._requestFrame(tick)
+        if (dms <= 0) self._requestFrame(tick)
         else setTimeout(function () { self._requestFrame(tick) }, dms)
     })();
 };
