@@ -28,7 +28,9 @@ function Engine (opts, fn) {
     this._info = null;
     this.fps = 0;
     this._requestFrame = opts.requestFrame || raf;
-    
+    this._correction = defined(opts.correction,
+        typeof window !== 'undefined' ? 0 : 1
+    );
     if (fn) this.on('tick', fn);
 }
 
@@ -44,8 +46,8 @@ Engine.prototype.run = function () {
         self.tick();
         var elapsed = (self.now() - self.last) / 1000;
         var delay = Math.max(0, (1 / self._fpsTarget) - elapsed);
-        var dms = delay * 1000;
-        if (dms <= 0) self._requestFrame(tick)
+        var dms = delay * 1000 - self._correction;
+        if (dms <= 2) self._requestFrame(tick)
         else setTimeout(function () { self._requestFrame(tick) }, dms)
     })();
 };
