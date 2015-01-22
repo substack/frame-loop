@@ -65,7 +65,7 @@ Engine.prototype.tick = function () {
     if (!this.running) return;
     
     var now = this.now();
-    var dt = now - this.last;
+    var dt = Math.max(0, now - this.last);
     this.last = now;
     this.time += dt;
     this.emit('tick', dt);
