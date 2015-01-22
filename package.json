@@ -1,6 +1,6 @@
 {
   "name": "frame-loop",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "timing for simulations and games for node and the browser",
   "main": "index.js",
   "dependencies": {
